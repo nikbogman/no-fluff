@@ -9,6 +9,12 @@ Make documentation and comments say more with less. The goal is not
 documentation coverage — it's information density. Every sentence should earn
 its place.
 
+**Aim for under-documented rather than over-documented**, while keeping
+everything a developer actually needs. Do not preserve text simply because it
+is technically correct — correctness is not a reason to keep something, only
+usefulness is. When unsure whether to keep an explanation, prefer the shorter
+version.
+
 This is a deletion tool. Read "Never edit" and "Preconditions" before touching
 anything.
 
@@ -118,6 +124,29 @@ Add only where critically missing: a public symbol with *no* docs whose purpose
 isn't obvious from its name and signature gets one to three lines, no more.
 Coverage is not the goal. See `references/comments.md`.
 
+## How much to cut
+
+For a verbose file, **aim to remove 30–50% of the text**. This is a calibration
+guide, not a quota — don't delete useful content to hit a number, and don't
+stop at 10% and call it done. If a section says in ten sentences what three
+would cover, use three. If one is enough, use one. If it isn't needed, delete it.
+
+**Comments should be rare.** A codebase with a comment every few lines is
+over-commented almost by definition. Default to deleting a comment unless it
+answers one of:
+
+- Why is this unusual?
+- Why can't we use the obvious approach?
+- What constraint are we working around?
+- What business rule isn't visible in the code?
+- What external behavior must we account for?
+
+If a comment doesn't answer something in that shape, it goes. Don't replace an
+obvious comment with a shorter obvious comment — delete it outright.
+
+Don't preserve the original word count, and don't add text to make a document
+feel complete. Shorter is better whenever the meaning survives.
+
 ## Priority order
 
 For any piece of text, work through this order and stop at the first that applies:
@@ -132,22 +161,24 @@ Don't rewrite by default. Deletion is usually the biggest improvement available.
 
 ## Check the history before deleting
 
-The odd-looking comment is often the important one — it was added at 2am after
-an incident. Before deleting a comment that looks redundant *but is oddly
-specific* (a magic number, a named vendor, a version, a date, a defensive
-check):
+A narrow exception to the default. Some comments record something that broke,
+and the code won't tell you. Before deleting a comment that names a **specific
+external cause** — a ticket or issue number, a CVE, a dated incident, a named
+vendor bug, a version that misbehaves — check where it came from:
 
 ```bash
 git log -S "<distinctive phrase>" --oneline -- <file>
 git blame -L <line>,<line> -- <file>
 ```
 
-If it arrived with a bug fix, an incident response, or a revert, it stays —
-that specificity is the information. If it arrived with the original feature
-commit and says nothing the code doesn't, it goes.
+If it arrived with a bug fix, hotfix, incident response, or revert, keep it —
+that reference is the information. Otherwise delete it as normal.
 
-Skip this check for clearly generic comments (`// loop through users`); it's
-for the ones that made you pause.
+This check is **only** for comments citing an external cause. Don't run it on
+comments that are merely detailed, defensive, or oddly worded — those are
+ordinary deletion candidates, and checking every one of them turns a cleanup
+pass into an archaeology project. If in doubt and there's no external
+reference, delete.
 
 ## Process
 
@@ -197,15 +228,21 @@ comments in <module>`.
 
 ## When to stop
 
-**A pass that finds nothing to cut is a successful pass.** Report that plainly
-and change nothing.
+This applies to files that have **already been through a pass** — not to a
+first run.
 
-Do not manufacture edits to justify the run. Rewording something that was
-already fine is a regression: it costs review time, pollutes git blame, and
-risks losing meaning. If the docs are clean, say "these are already concise —
-no changes needed" and stop.
+On a repeat pass, finding nothing to cut is a successful result. Report it and
+change nothing. Rewording text that was already tight is a regression: it costs
+review time, pollutes git blame, and risks losing meaning.
 
-The work is done when every remaining sentence would be missed if deleted.
+On a **first** pass over a file you haven't trimmed before, "nothing to cut" is
+almost always wrong. Verbose codebases don't produce clean files by accident.
+If a first pass yields no changes, re-read with the deletion bar in mind —
+would a developer genuinely miss this, or does the code and context already say
+it? — before concluding the file is fine.
+
+The work is done when the file reads as slightly under-documented and every
+remaining sentence would be missed if removed.
 
 ## Scope note (currently trim-everything)
 
