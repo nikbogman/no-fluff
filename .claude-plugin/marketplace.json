@@ -1,0 +1,15 @@
+{
+  "name": "no-fluff",
+  "description": "A Claude skill that keeps documentation, code comments, and docstrings short and useful.",
+  "owner": {
+    "name": "nikbogman",
+    "url": "https://github.com/nikbogman"
+  },
+  "plugins": [
+    {
+      "name": "no-fluff",
+      "source": "./",
+      "description": "Trim documentation, code comments, and docstrings to maximum useful information with minimum necessary text."
+    }
+  ]
+}

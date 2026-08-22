@@ -1,0 +1,12 @@
+{
+  "name": "no-fluff",
+  "description": "Trim documentation, code comments, and docstrings to maximum useful information with minimum necessary text.",
+  "version": "1.0.0",
+  "author": {
+    "name": "nikbogman",
+    "url": "https://github.com/nikbogman"
+  },
+  "homepage": "https://github.com/nikbogman/no-fluff",
+  "repository": "https://github.com/nikbogman/no-fluff",
+  "keywords": ["documentation", "comments", "docstrings", "editing"]
+}
